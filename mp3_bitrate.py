@@ -35,7 +35,8 @@ def indexer(path):
         for filename in filenames:
           if fnmatch.fnmatch(filename, '*.mp3'):
             current_file_name = os.path.join(directory,filename)
-            print current_file_name
+            if debug==True:
+              print current_file_name
             f = open(current_file_name, 'rb')
             h = hashlib.md5()
             h.update(f.read())
@@ -45,10 +46,9 @@ def indexer(path):
               input_file = MP3(current_file_name)
               raw_bitrate = input_file.info.bitrate
               bitrate = (raw_bitrate / 1000)
-              if debug == True:
-               print("%s; %s; %s") %(current_file_name, bitrate, md5sum)
+              print("%s; %s; %s") %(current_file_name, bitrate, md5sum)
             except mutagen.mp3.HeaderNotFoundError:
-              print("corrupted mp3")
+              print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
       
   else:
     print("%s is file") %path
