@@ -11,8 +11,10 @@ EXAMPLES
 
 to find duplicated mp3:
 for i in $(python mp3_bitrate.py ~/ |awk -F ';' '{print $3}'); do echo $i; done| sort | uniq -cd
-then grep the results
+
+find corrupted mp3s
+python mp3_bitrate.py ~/ | grep corrupted
 
 it's always annoying
 
-m
+
