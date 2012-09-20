@@ -27,6 +27,7 @@ else:
   sys.exit(1)
 
 def indexer(path):
+  mp3list={}
   if os.path.isdir(path):
     filesindir= os.listdir(path)
 
@@ -47,15 +48,17 @@ def indexer(path):
               raw_bitrate = input_file.info.bitrate
               bitrate = (raw_bitrate / 1000)
               if bitrate <= 128:
-                print("lowQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
+                print("lowQ;%s;%s") %(current_file_name, bitrate)
               elif bitrate >= 128:
-                print(" hiQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
+                print(" hiQ;%s;%s") %(current_file_name, bitrate)
+              mp3list[current_file_name]=md5sum
             except mutagen.mp3.HeaderNotFoundError:
               print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
-      
+              mp3list[current_file_name]='corrupted'
   else:
     print("%s is file") %path
 
+  print(mp3list)
 
 if __name__ == "__main__":
   indexer(path)
