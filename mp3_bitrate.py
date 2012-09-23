@@ -12,9 +12,9 @@ except ImportError:
   sys.exit(1)
 
 # set to false for quieter output
-#debug = True 
-debug = False 
-
+debug = True 
+#debug = False 
+maxdebug = False
 
 # TODO
 # store info in sqlite or so 
@@ -36,7 +36,7 @@ def indexer(path):
         for filename in filenames:
           if fnmatch.fnmatch(filename, '*.mp3'):
             current_file_name = os.path.join(directory,filename)
-            if debug==True:
+            if maxdebug==True:
               print current_file_name
             f = open(current_file_name, 'rb')
             h = hashlib.md5()
@@ -55,6 +55,7 @@ def indexer(path):
                   print(" hiQ;%s;%s") %(current_file_name, bitrate)
               if md5sum in mp3list:
                 print("duplicated file %s:%s !") %(mp3list[md5sum],md5sum)
+                raw_input("press enter to continue")
               else:
                 mp3list[md5sum]=current_file_name
             except mutagen.mp3.HeaderNotFoundError:
