@@ -11,7 +11,7 @@ except ImportError:
   print("install mutagen!!\non Debian like distributions, you can do: apt-get install python-mutagen")
   sys.exit(1)
 
-# set to false for quiet output
+# set to false for quieter output
 #debug = True 
 debug = False 
 
@@ -48,17 +48,23 @@ def indexer(path):
               raw_bitrate = input_file.info.bitrate
               bitrate = (raw_bitrate / 1000)
               if bitrate <= 128:
-                print("lowQ;%s;%s") %(current_file_name, bitrate)
+                if debug==True:
+                  print("lowQ;%s;%s") %(current_file_name, bitrate)
               elif bitrate >= 128:
-                print(" hiQ;%s;%s") %(current_file_name, bitrate)
-              mp3list[current_file_name]=md5sum
+                if debug==True:
+                  print(" hiQ;%s;%s") %(current_file_name, bitrate)
+              if md5sum in mp3list:
+                print("duplicated file %s:%s !") %(mp3list[md5sum],md5sum)
+              else:
+                mp3list[md5sum]=current_file_name
             except mutagen.mp3.HeaderNotFoundError:
               print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
-              mp3list[current_file_name]='corrupted'
+              mp3list['corrupted']=current_file_name
   else:
-    print("%s is file") %path
+    print("%s is a file, not a directory") %path
 
-  print(mp3list)
+  #print(mp3list)
+
 
 if __name__ == "__main__":
   indexer(path)
