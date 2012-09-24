@@ -12,7 +12,8 @@ except ImportError:
   sys.exit(1)
 
 # set to false for quieter output
-debug = True 
+#debug = True 
+debug = False 
 #debug = False 
 maxdebug = False
 
@@ -28,6 +29,7 @@ else:
 
 def indexer(path):
   mp3list={}
+  md5sumlist=[]
   if os.path.isdir(path):
     filesindir= os.listdir(path)
 
@@ -47,25 +49,32 @@ def indexer(path):
               input_file = MP3(current_file_name)
               raw_bitrate = input_file.info.bitrate
               bitrate = (raw_bitrate / 1000)
+              md5sumlist.append(md5sum)
               if bitrate <= 128:
                 if debug==True:
-                  print("lowQ;%s;%s") %(current_file_name, bitrate)
+                  print("lowQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
               elif bitrate >= 128:
                 if debug==True:
-                  print(" hiQ;%s;%s") %(current_file_name, bitrate)
-              if md5sum in mp3list:
-                print("duplicated file %s:%s !") %(mp3list[md5sum],md5sum)
-                raw_input("press enter to continue")
-              else:
-                mp3list[md5sum]=current_file_name
+                  print(" hiQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
+              #if md5sum in mp3list:
+                #print("duplicated file %s:%s !") %(mp3list[md5sum],md5sum)
+                #raw_input("press enter to continue")
+              #else:
+              mp3list[current_file_name]=md5sum
             except mutagen.mp3.HeaderNotFoundError:
               print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
-              mp3list['corrupted']=current_file_name
+              mp3list[current_file_name]='corrupted'
   else:
     print("%s is a file, not a directory") %path
 
-  #print(mp3list)
-
+  for i in sorted(set(md5sumlist)):
+    x=md5sumlist.count(i)
+    if debug == True:
+      print("%s %s") %(i,x)
+    if x > 1:
+      for m,n in mp3list.items():
+        if n == i:
+          print m,n 
 
 if __name__ == "__main__":
   indexer(path)
