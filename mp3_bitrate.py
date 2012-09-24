@@ -12,14 +12,15 @@ except ImportError:
   sys.exit(1)
 
 # set to false for quieter output
-#debug = True 
-debug = False 
+debug = True 
+#debug = False 
 #debug = False 
 maxdebug = False
 
 # TODO
-# store info in sqlite or so 
+# export a .csv (or excell) file
 # by now, > to a file does it.
+# 
 
 if len(sys.argv) > 1:
   path=sys.argv[1]
@@ -52,29 +53,26 @@ def indexer(path):
               md5sumlist.append(md5sum)
               if bitrate <= 128:
                 if debug==True:
-                  print("lowQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
+                  print("lowQ;%s;%s") %(current_file_name, bitrate)
               elif bitrate >= 128:
                 if debug==True:
-                  print(" hiQ;%s;%s;%s") %(current_file_name, bitrate, md5sum)
-              #if md5sum in mp3list:
-                #print("duplicated file %s:%s !") %(mp3list[md5sum],md5sum)
-                #raw_input("press enter to continue")
-              #else:
+                  print(" hiQ;%s;%s") %(current_file_name, bitrate)
               mp3list[current_file_name]=md5sum
             except mutagen.mp3.HeaderNotFoundError:
               print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
               mp3list[current_file_name]='corrupted'
   else:
     print("%s is a file, not a directory") %path
-
-  for i in sorted(set(md5sumlist)):
-    x=md5sumlist.count(i)
-    if debug == True:
-      print("%s %s") %(i,x)
+  
+  print("\nRepeated files and md5s:\n")
+  for eachmd5 in sorted(set(md5sumlist)):
+    x=md5sumlist.count(eachmd5)
+    if maxdebug == True:
+      print("%s %s") %(eachmd5,x)
     if x > 1:
       for m,n in mp3list.items():
-        if n == i:
-          print m,n 
+        if n == eachmd5:
+          print n,m 
 
 if __name__ == "__main__":
   indexer(path)
