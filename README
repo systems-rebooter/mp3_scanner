@@ -9,12 +9,16 @@ needs python-mutagen
 EXAMPLES
 ========
 
-to find duplicated mp3:
-for i in $(python mp3_bitrate.py ~/ |awk -F ';' '{print $3}'); do echo $i; done| sort | uniq -cd
+Find duplicated files:
+----------------------
+mp3_bitrate.py ~/ 
 
 find corrupted mp3s
+--------------------
 python mp3_bitrate.py ~/ | grep corrupted
 
-it's always annoying
 
+find low quality mp3 (bitrate< 128Kb/s)
+---------------------------------------
+./mp3_scanner.py ~/ | grep lowQ
 
