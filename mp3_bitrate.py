@@ -41,26 +41,30 @@ def indexer(path):
             current_file_name = os.path.join(directory,filename)
             if maxdebug==True:
               print current_file_name
-            f = open(current_file_name, 'rb')
-            h = hashlib.md5()
-            h.update(f.read())
-            md5sum = h.hexdigest()
-            f.close()
             try:
-              input_file = MP3(current_file_name)
-              raw_bitrate = input_file.info.bitrate
-              bitrate = (raw_bitrate / 1000)
-              md5sumlist.append(md5sum)
-              if bitrate <= 128:
-                if debug==True:
-                  print("lowQ;%s;%s") %(current_file_name, bitrate)
-              elif bitrate >= 128:
-                if debug==True:
-                  print(" hiQ;%s;%s") %(current_file_name, bitrate)
-              mp3list[current_file_name]=md5sum
-            except mutagen.mp3.HeaderNotFoundError:
-              print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
-              mp3list[current_file_name]='corrupted'
+              f = open(current_file_name, 'rb')
+              h = hashlib.md5()
+              h.update(f.read())
+              md5sum = h.hexdigest()
+              f.close()
+              try:
+                input_file = MP3(current_file_name)
+                raw_bitrate = input_file.info.bitrate
+                bitrate = (raw_bitrate / 1000)
+                md5sumlist.append(md5sum)
+                if bitrate <= 128:
+                  if debug==True:
+                    print("lowQ;%s;%s") %(current_file_name, bitrate)
+                elif bitrate >= 128:
+                  if debug==True:
+                    print(" hiQ;%s;%s") %(current_file_name, bitrate)
+                mp3list[current_file_name]=md5sum
+              except mutagen.mp3.HeaderNotFoundError:
+                print("%s;corrupted mp3;%s") %(current_file_name, md5sum)
+                mp3list[current_file_name]='corrupted'
+            except IOError:
+              print("weird file: %s") %current_file_name
+              pass 
   else:
     print("%s is a file, not a directory") %path
   
